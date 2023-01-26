@@ -39,6 +39,70 @@ app.post('/crearcontacto',(req,res)=>{
 
 })
 
+app.get('/buscarcontacto',(req,res)=>{
+    let objectId = req.query.id
+    if (!objectId) {
+        res.send("Error")
+    } else{
+        try{
+            let obID = mongodb.ObjectId(objectId)
+            let recibido = db.collection('contactos').findOne({"_id":obID}).then((result) => {
+                if (!result.dni) {
+                   return res.send('404')
+                }
+                else{
+                   return res.send(result)
+                }
+            }).catch((err) => {
+                return res.send('404')
+            }); 
+            
+        }
+        catch{
+            return res.send("Error, el objectId no tiene el formato correcto")
+        }
+        
+        
+        
+    }
+
+})
+
+app.put('/actualizarcontacto',(req,res)=>{
+    
+})
+
+app.delete('/eliminarcontacto', (req,res)=>{
+    let objectId = req.query.id
+    if (!objectId) {
+        res.send("Error")
+    } else{
+        try{
+            let obID = mongodb.ObjectId(objectId)
+            let recibido = db.collection('contactos').deleteOne({"_id":obID}).then((result) => {
+                if (result.deletedCount>0) {
+                    return res.send("Eliminado correctamente")
+                }
+                else{
+                    return res.send("No se pudo eliminar")
+                }
+                
+                
+            }).catch((err) => {
+                return res.send('Ha fallado')
+            }); 
+            
+        }
+        catch{
+            return res.send("Error, el objectId no tiene el formato correcto")
+        }
+        
+        
+        
+    }
+
+})
+
 app.listen(3000, ()=>{
     console.log("El server está encendido")
 })
